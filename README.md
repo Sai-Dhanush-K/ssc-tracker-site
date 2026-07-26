@@ -1,4 +1,4 @@
-# SSC Helper Site
+# SSC Tracker Site
 
 A single-file SSC prep dashboard for tracking syllabus topics, confidence, notes, and mock tests.
 
@@ -6,7 +6,7 @@ A single-file SSC prep dashboard for tracking syllabus topics, confidence, notes
 
 Open the deployed version here:
 
-https://sai-dhanush-k.github.io/ssc-helper-site/
+https://sai-dhanush-k.github.io/ssc-tracker-site/
 
 If you are not comfortable with code or setup, use that link directly in your browser. It opens the app ready to use, with no install needed.
 
