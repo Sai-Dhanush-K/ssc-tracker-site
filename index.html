@@ -7,10 +7,31 @@
   <!-- Google Fonts for playful handwritten & bold look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <!-- Chart.js for analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    :root{
+      --ink:#1e1e1e;
+      --paper:#fbfbf7;
+      --card:#ffffff;
+      --purple:#6965db;
+      --purple-ring:#edecfc;
+      --coral:#ff6b6b;
+      --coral-dark:#e8590c;
+      --c-red:#e03131;
+      --c-orange:#f08c00;
+      --c-yellow:#ffd43b;
+      --c-lgreen:#82c91e;
+      --c-green:#2f9e44;
+      --sh-sm:3px 3px 0 var(--ink);
+      --sh-md:5px 5px 0 var(--ink);
+      --sh-lg:8px 8px 0 var(--ink);
+      --r-sm:10px;
+      --r-md:16px;
+      --r-lg:22px;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -18,18 +39,29 @@
     }
 
     body {
-      font-family: 'Nunito', sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255, 218, 120, 0.35), transparent 34%),
-        radial-gradient(circle at top right, rgba(167, 227, 255, 0.45), transparent 30%),
-        linear-gradient(180deg, #fffaf0 0%, #fff3d6 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--paper);
+      background-image: radial-gradient(var(--ink) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+      background-attachment: fixed;
       min-height: 100vh;
-      padding: 1.5rem;
-      color: #1E1E1E;
+      padding: 1.25rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+
+    button:focus-visible, [tabindex]:focus-visible, input:focus-visible,
+    select:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
     }
 
     .app-shell {
-      max-width: 1250px;
+      max-width: 1220px;
       margin: 0 auto;
       position: relative;
     }
@@ -40,99 +72,125 @@
       align-items: flex-start;
       gap: 1rem;
       flex-wrap: wrap;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .app-title {
-      font-family: 'Fredoka', sans-serif;
-      font-size: clamp(2.2rem, 4vw, 3.3rem);
+      font-family: 'Kalam', cursive;
+      font-weight: 700;
+      font-size: clamp(2.1rem, 4vw, 3rem);
       line-height: 1;
-      text-shadow: 4px 4px 0 #ffb347;
-      letter-spacing: 0.2px;
+      transform: rotate(-1deg);
+      display: inline-block;
+      text-shadow: 4px 4px 0 var(--c-yellow);
     }
 
     .title-subtle {
       display: inline-block;
-      margin-top: 0.55rem;
-      padding: 0.35rem 0.7rem;
-      background: rgba(255, 255, 255, 0.8);
-      border: 2px solid #000;
-      box-shadow: 3px 3px 0 #000;
-      font-size: 0.92rem;
-      font-weight: 700;
+      margin-top: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--card);
+      border: 2.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
-    /* Neo-brutalist base card */
+    /* Neo-brutalist base card: presses toward its own shadow on hover,
+       signalling "content", as opposed to buttons which lift. */
     .nb-card {
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 18px;
-      border: 3px solid #000;
-      box-shadow: 8px 8px 0 #000;
-      padding: 1rem;
-      transition: all 0.1s ease;
-      margin-bottom: 1rem;
+      background: var(--card);
+      border-radius: var(--r-md);
+      border: 3px solid var(--ink);
+      box-shadow: var(--sh-md);
+      padding: 1.15rem;
+      transition: box-shadow .12s ease, transform .12s ease;
+      margin-bottom: 1.1rem;
     }
     .nb-card:hover {
-      box-shadow: 6px 6px 0 #000;
+      box-shadow: var(--sh-sm);
       transform: translate(2px, 2px);
     }
 
     button, .btn {
-      font-family: 'Fredoka', sans-serif;
-      background: linear-gradient(180deg, #ffe28f 0%, #ffc94d 100%);
-      border: 3px solid #000;
-      box-shadow: 4px 4px 0 #000;
-      padding: 0.5rem 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      background: var(--card);
+      border: 2.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-sm);
+      padding: 0.55rem 1.1rem;
       cursor: pointer;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: 0.1s;
+      font-size: 0.95rem;
+      color: var(--ink);
+      letter-spacing: 0.1px;
+      transition: transform .1s ease, box-shadow .1s ease, background .1s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      color: #000;
+      gap: 0.4rem;
     }
     button:hover, .btn:hover {
-      background: #FFC107;
-      box-shadow: 2px 2px 0 #000;
-      transform: translate(2px, 2px);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--sh-md);
     }
-    button:active {
+    button:active, .btn:active {
+      transform: translate(2px, 2px);
       box-shadow: none;
-      transform: translate(4px, 4px);
+    }
+    button#addMockBtn, button.primary {
+      background: var(--purple);
+      color: #fff;
     }
 
     select, input, textarea {
-      font-family: 'Nunito', sans-serif;
-      border: 3px solid #000;
-      box-shadow: 3px 3px 0 #000;
-      padding: 0.5rem;
-      font-size: 1rem;
-      background: white;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-sm);
+      padding: 0.5rem 0.6rem;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--ink);
       outline: none;
     }
     textarea {
       resize: vertical;
-      min-height: 60px;
+      min-height: 70px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .section-heading {
+      font-family: 'Kalam', cursive;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     /* navigation tabs */
     .tabs {
       display: flex;
-      gap: 1rem;
+      gap: 0.6rem;
       flex-wrap: wrap;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
     .tab-btn {
-      background: linear-gradient(180deg, #b9e8ff 0%, #8dd8ff 100%);
-      font-size: 1.3rem;
-      padding: 0.6rem 2rem;
-      border-radius: 14px 14px 6px 6px;
+      font-family: 'Kalam', cursive;
+      font-weight: 700;
+      background: var(--card);
+      font-size: 1.2rem;
+      padding: 0.55rem 1.8rem;
+      border-radius: var(--r-sm) var(--r-sm) 4px 4px;
+      box-shadow: var(--sh-sm);
     }
     .tab-btn.active {
-      background: linear-gradient(180deg, #ffca74 0%, #ffae42 100%);
-      box-shadow: 6px 6px 0 #000;
+      background: var(--purple);
+      color: #fff;
+      box-shadow: var(--sh-md);
+      transform: rotate(-1deg);
     }
 
     .corner-tools {
@@ -143,31 +201,37 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.65rem;
+      gap: 0.6rem;
     }
 
     .corner-toggle {
-      padding: 0.45rem 0.95rem;
-      font-size: 0.95rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
       border-radius: 999px;
     }
 
     .corner-popover {
-      display: none;
       width: min(260px, calc(100vw - 2rem));
-      background: rgba(255, 251, 230, 0.98);
-      border: 3px solid #000;
-      border-radius: 18px;
-      box-shadow: 8px 8px 0 #000;
-      padding: 0.85rem;
+      background: var(--card);
+      border: 3px solid var(--ink);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-lg);
+      padding: 0.9rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(.97);
+      transform-origin: top right;
+      transition: opacity .15s ease, transform .15s ease, visibility .15s;
     }
 
     .corner-popover.open {
-      display: block;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
     }
 
     .corner-popover h3 {
-      font-family: 'Fredoka', sans-serif;
+      font-family: 'Kalam', cursive;
       margin-bottom: 0.75rem;
       font-size: 1.05rem;
     }
@@ -187,21 +251,22 @@
     #tree-container {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.7rem;
     }
     .node-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      border: 3px solid #000;
-      box-shadow: 5px 5px 0 #000;
-      padding: 0.5rem 0.8rem;
-      margin-left: 1.5rem;
-      transition: 0.1s;
+      background: var(--card);
+      border-radius: 4px var(--r-md) var(--r-md) 4px;
+      border: 2.5px solid var(--ink);
+      box-shadow: var(--sh-sm);
+      padding: 0.6rem 0.9rem;
+      margin-left: 1.4rem;
+      transition: box-shadow .1s ease;
       position: relative;
     }
     .node-card.root-children {
-      margin-left: 0; /* top level subjects have no left margin */
-      border-left: 12px solid #FFD700; /* default yellow left bar */
+      margin-left: 0;
+      border-left: 10px solid var(--c-yellow);
+      box-shadow: var(--sh-md);
     }
     .node-header {
       display: flex;
@@ -210,10 +275,11 @@
       flex-wrap: wrap;
     }
     .expand-btn {
-      background: #FFF;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0 #000;
-      font-size: 1.2rem;
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      box-shadow: var(--sh-sm);
+      font-size: 1.05rem;
       width: 32px;
       height: 32px;
       display: flex;
@@ -221,79 +287,93 @@
       justify-content: center;
       cursor: pointer;
       font-weight: bold;
-      color: #000;
-      transition: 0.1s;
+      color: var(--ink);
+      transition: background .1s ease, transform .1s ease;
     }
     .expand-btn:hover {
-      background: #EEE;
+      background: var(--purple-ring);
+      transform: translate(-1px,-1px);
     }
     .node-name {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 1.1rem;
+      font-family: 'Kalam', cursive;
+      font-weight: 700;
+      font-size: 1.05rem;
       cursor: pointer;
       text-decoration: none;
-      font-weight: 600;
+      transition: color .1s ease;
+    }
+    .node-name:hover {
+      color: var(--purple);
     }
     .tier2-badge {
-      background: #FF6B6B;
+      background: var(--coral);
       color: white;
-      font-weight: bold;
-      font-size: 0.7rem;
+      font-weight: 700;
+      font-size: 0.68rem;
       padding: 0.2rem 0.5rem;
-      border: 2px solid #000;
+      border: 2px solid var(--ink);
       border-radius: 0;
-      box-shadow: 2px 2px 0 #000;
-      letter-spacing: 0.5px;
+      box-shadow: var(--sh-sm);
+      letter-spacing: 0.05em;
     }
     .node-children {
-      margin-top: 0.5rem;
+      margin-top: 0.55rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.55rem;
     }
 
     /* confidence color left border classes */
-    .conf-0 { border-left: 12px solid #FF4D4D !important; }
-    .conf-1 { border-left: 12px solid #FFA500 !important; }
-    .conf-2 { border-left: 12px solid #FFD700 !important; }
-    .conf-3 { border-left: 12px solid #90EE90 !important; }
-    .conf-4 { border-left: 12px solid #2ECC40 !important; }
+    .conf-0 { border-left: 10px solid var(--c-red) !important; }
+    .conf-1 { border-left: 10px solid var(--c-orange) !important; }
+    .conf-2 { border-left: 10px solid var(--c-yellow) !important; }
+    .conf-3 { border-left: 10px solid var(--c-lgreen) !important; }
+    .conf-4 { border-left: 10px solid var(--c-green) !important; }
 
     /* modal */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(30,30,30,0.55);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 1rem;
     }
     .modal-content {
-      background: linear-gradient(180deg, #fffdf3 0%, #fff5dc 100%);
-      border: 5px solid #000;
-      border-radius: 22px;
-      box-shadow: 10px 10px 0 #000;
-      padding: 2rem;
+      background: var(--card);
+      border: 4px solid var(--ink);
+      border-radius: var(--r-lg);
+      box-shadow: var(--sh-lg);
+      padding: 1.75rem;
       max-width: 500px;
-      width: 90%;
+      width: 100%;
       max-height: 80vh;
       overflow-y: auto;
     }
+    #modalNodeName {
+      font-family: 'Kalam', cursive;
+      font-weight: 700;
+      font-size: 1.35rem;
+      margin-bottom: 0.9rem;
+    }
+    .modal-content p strong { font-size: 0.85rem; }
     .confidence-palette {
       display: flex;
-      gap: 0.5rem;
-      margin: 0.8rem 0;
+      gap: 0.6rem;
+      margin: 0.7rem 0 1.1rem;
     }
     .conf-dot {
-      width: 30px;
-      height: 30px;
-      border: 3px solid #000;
-      box-shadow: 3px 3px 0 #000;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2.5px solid var(--ink);
+      box-shadow: var(--sh-sm);
       cursor: pointer;
-      transition: 0.1s;
+      transition: transform .1s ease;
     }
-    .conf-dot:hover { transform: scale(1.1); }
+    .conf-dot:hover { transform: scale(1.12); }
 
     /* mock page */
     .hidden-page {
@@ -305,11 +385,21 @@
       gap: 1rem;
       align-items: end;
     }
+    .mock-form-grid > div > label,
+    .subject-marks > div > label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+      opacity: 0.7;
+    }
     .subject-marks {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      margin: 0.5rem 0;
+      margin: 0.9rem 0;
     }
     .analytics-filters {
       display: flex;
@@ -317,34 +407,62 @@
       gap: 1.2rem;
       align-items: center;
       margin: 1rem 0;
-      background: #FFECB3;
-      padding: 0.8rem;
-      border: 3px solid #000;
-      box-shadow: 4px 4px 0 #000;
+      background: var(--card);
+      padding: 0.85rem 1rem;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-sm);
+    }
+    .analytics-filters label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
     canvas {
       background: white;
-      border: 3px solid #000;
-      box-shadow: 6px 6px 0 #000;
+      border: 2.5px solid var(--ink);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-md);
       margin: 1rem 0;
       max-width: 100%;
     }
     .mock-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       margin: 1rem 0;
-      background: rgba(255, 255, 255, 0.96);
-      border: 3px solid #000;
-      box-shadow: 6px 6px 0 #000;
+      background: var(--card);
+      border: 3px solid var(--ink);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-md);
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
     }
     .mock-table th, .mock-table td {
-      border: 2px solid #000;
-      padding: 0.4rem;
+      border-bottom: 2px solid var(--ink);
+      border-right: 2px solid var(--ink);
+      padding: 0.5rem 0.6rem;
       text-align: center;
+      font-size: 0.82rem;
+    }
+    .mock-table th:last-child, .mock-table td:last-child { border-right: none; }
+    .mock-table tr:last-child td { border-bottom: none; }
+    .mock-table th {
+      background: var(--ink);
+      color: var(--paper);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .mock-table tr:nth-child(even) td {
+      background: #f7f7fb;
     }
     .btn-small {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.7rem;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
     }
     .global-actions {
       display: flex;
@@ -353,8 +471,10 @@
       margin-bottom: 1rem;
     }
     hr {
-      border: 2px solid #000;
+      border: none;
+      border-top: 2.5px dashed var(--ink);
       margin: 1.5rem 0;
+      opacity: 0.6;
     }
 
     .node-actions {
@@ -366,13 +486,32 @@
 
     .mini-btn {
       font-size: 0.72rem;
-      padding: 0.18rem 0.55rem;
-      box-shadow: 2px 2px 0 #000;
+      padding: 0.25rem 0.4rem;
+      box-shadow: var(--sh-sm);
       border-width: 2px;
+      min-width: 30px;
+      min-height: 30px;
+      justify-content: center;
     }
 
     .mini-btn.danger {
-      background: linear-gradient(180deg, #ff9f9f 0%, #ff6b6b 100%);
+      background: var(--coral);
+      color: #fff;
+    }
+
+    .icon-only {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      font-size: 0.95rem;
+    }
+
+    .node-icon {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -414,7 +553,7 @@
 
     <!-- MOCK TEST PAGE (hidden initially) -->
     <div id="mock-page" class="hidden-page">
-      <h2 style="font-family:'Fredoka', sans-serif;">📝 Log New Mock Test</h2>
+      <h2 class="section-heading">📝 Log New Mock Test</h2>
       <div class="nb-card">
         <div class="mock-form-grid">
           <div>
@@ -448,10 +587,10 @@
         <button id="addMockBtn" style="margin-top:1rem;">➕ Add Mock Test</button>
       </div>
 
-      <h2 style="font-family:'Fredoka', sans-serif; margin-top:2rem;">📋 Previous Mock Tests</h2>
+      <h2 class="section-heading">📋 Previous Mock Tests</h2>
       <div id="mockListContainer"></div>
 
-      <h2 style="font-family:'Fredoka', sans-serif; margin-top:2rem;">📈 Analytics</h2>
+      <h2 class="section-heading">📈 Analytics</h2>
       <div class="analytics-filters" id="analyticsFilters">
         <label>Tier: 
           <select id="analyticTier"><option value="1">Tier 1</option><option value="2">Tier 2</option></select>
@@ -472,7 +611,7 @@
   <!-- MODAL for syllabus node details -->
   <div class="modal-overlay" id="nodeModal">
     <div class="modal-content">
-      <h3 id="modalNodeName" style="font-family:'Fredoka', sans-serif;"></h3>
+      <h3 id="modalNodeName"></h3>
       <p><strong>Confidence:</strong></p>
       <div class="confidence-palette" id="confidencePalette"></div>
       <label><strong>Notes:</strong></label>
@@ -758,8 +897,11 @@
           actionWrap.className = 'node-actions';
 
           const editBtn = document.createElement('button');
-          editBtn.className = 'mini-btn';
-          editBtn.textContent = 'Edit';
+          editBtn.className = 'mini-btn icon-only';
+          editBtn.type = 'button';
+          editBtn.title = 'Edit subtopic';
+          editBtn.setAttribute('aria-label', 'Edit subtopic');
+          editBtn.innerHTML = '<svg class="node-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm2.92 2.33H5v-.92l8.06-8.06.92.92L5.92 19.58ZM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82Z"/></svg>';
           editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             openNodeModal(node.id);
@@ -767,8 +909,11 @@
           actionWrap.appendChild(editBtn);
 
           const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'mini-btn danger';
-          deleteBtn.textContent = 'Delete';
+          deleteBtn.className = 'mini-btn danger icon-only';
+          deleteBtn.type = 'button';
+          deleteBtn.title = 'Delete subtopic';
+          deleteBtn.setAttribute('aria-label', 'Delete subtopic');
+          deleteBtn.innerHTML = '<svg class="node-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2H8l1-2Zm-1 5h2v9H8V9Zm4 0h2v9h-2V9Zm4 0h2v9h-2V9Z"/></svg>';
           deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             removeNode(node.id);
@@ -807,14 +952,14 @@
 
         const palette = document.getElementById('confidencePalette');
         palette.innerHTML = '';
-        const colors = ['#FF4D4D', '#FFA500', '#FFD700', '#90EE90', '#2ECC40'];
+        const colors = ['#e03131', '#f08c00', '#ffd43b', '#82c91e', '#2f9e44'];
         const labels = ['Bad', 'Weak', 'Okay', 'Good', 'Great'];
         colors.forEach((color, idx) => {
           const dot = document.createElement('div');
           dot.className = 'conf-dot';
           dot.style.backgroundColor = color;
           dot.title = labels[idx];
-          if (node.confidence === idx) dot.style.boxShadow = '0 0 0 4px #000';
+          if (node.confidence === idx) dot.style.boxShadow = '0 0 0 3px #fff, 0 0 0 6px #6965db';
           dot.addEventListener('click', () => {
             node.confidence = idx;
             saveAllData();
@@ -1027,8 +1172,8 @@
             datasets: [{
               label: 'Total Obtained Marks',
               data: sorted.map(m => m.totalObt),
-              borderColor: '#FF6B6B',
-              backgroundColor: 'rgba(255,107,107,0.2)',
+              borderColor: '#6965db',
+              backgroundColor: 'rgba(105,101,219,0.15)',
               borderWidth: 3,
               pointBackgroundColor: '#000',
               tension: 0.2
@@ -1037,11 +1182,11 @@
           options: {
             responsive: true,
             plugins: {
-              legend: { labels: { font: { family: 'Patrick Hand', size: 14 } } }
+              legend: { labels: { font: { family: 'JetBrains Mono', size: 14 } } }
             },
             scales: {
-              x: { ticks: { font: { family: 'Patrick Hand' } } },
-              y: { beginAtZero: true, ticks: { font: { family: 'Patrick Hand' } } }
+              x: { ticks: { font: { family: 'JetBrains Mono' } } },
+              y: { beginAtZero: true, ticks: { font: { family: 'JetBrains Mono' } } }
             }
           }
         });
@@ -1052,7 +1197,7 @@
         if (sorted.length > 0 && sorted[0].subjectMarks) {
           const subjects = Object.keys(sorted[0].subjectMarks);
           const datasets = subjects.map((sub, i) => {
-            const colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'];
+            const colors = ['#e03131','#1c7ed6','#f08c00','#2f9e44','#6965db'];
             return {
               label: sub,
               data: sorted.map(m => m.subjectMarks?.[sub] || 0),
@@ -1067,10 +1212,10 @@
             data: { labels: sorted.map(m => m.date), datasets },
             options: {
               responsive: true,
-              plugins: { legend: { labels: { font: { family: 'Patrick Hand' } } } },
+              plugins: { legend: { labels: { font: { family: 'JetBrains Mono' } } } },
               scales: {
-                x: { ticks: { font: { family: 'Patrick Hand' } } },
-                y: { beginAtZero: true, ticks: { font: { family: 'Patrick Hand' } } }
+                x: { ticks: { font: { family: 'JetBrains Mono' } } },
+                y: { beginAtZero: true, ticks: { font: { family: 'JetBrains Mono' } } }
               }
             }
           });
