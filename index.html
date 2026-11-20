@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>SSC Syllabus & Mock Tracker | Neo‑brutalist</title>
-  <!-- Google Fonts for playful handwritten & bold look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <!-- Chart.js for analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root{
@@ -97,8 +95,6 @@
       font-weight: 600;
     }
 
-    /* Neo-brutalist base card: presses toward its own shadow on hover,
-       signalling "content", as opposed to buttons which lift. */
     .nb-card {
       background: var(--card);
       border-radius: var(--r-md);
@@ -379,14 +375,19 @@
     .hidden-page {
       display: none;
     }
+    
+    /* Adjusted form grid to prevent overlap */
     .mock-form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
       gap: 1rem;
       align-items: end;
     }
+    .mock-form-grid > div {
+      min-width: 0;
+    }
     .mock-form-grid > div > label,
-    .subject-marks > div > label {
+    .subject-input-group > label {
       display: block;
       font-weight: 700;
       font-size: 0.72rem;
@@ -395,12 +396,66 @@
       margin-bottom: 0.3rem;
       opacity: 0.7;
     }
-    .subject-marks {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin: 0.9rem 0;
+    .mock-form-grid input, .mock-form-grid select {
+      width: 100%;
+      box-sizing: border-box;
     }
+
+    .subject-marks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .subject-input-group {
+      border: 2px dashed #b0b0c0;
+      border-radius: var(--r-sm);
+      padding: 0.65rem;
+      background: #fafafc;
+      min-width: 0;
+    }
+    .answer-inputs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+    .answer-inputs > div {
+      flex: 1;
+      min-width: 0;
+    }
+    .answer-inputs label {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      opacity: 0.6;
+      margin-bottom: 0.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .answer-inputs input {
+      width: 100%;
+      padding: 0.3rem 0.4rem;
+      font-size: 0.85rem;
+      box-shadow: var(--sh-sm);
+      box-sizing: border-box;
+    }
+    .subject-input-group .subject-mark {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .form-hint {
+      font-size: 0.8rem;
+      opacity: 0.65;
+      margin: 0.5rem 0;
+      font-style: italic;
+    }
+    .subject-accuracy {
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 0.4rem;
+      color: var(--purple);
+    }
+
     .analytics-filters {
       display: flex;
       flex-wrap: wrap;
@@ -428,16 +483,20 @@
       margin: 1rem 0;
       max-width: 100%;
     }
+
+    .table-scroll {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-radius: var(--r-md);
+      border: 3px solid var(--ink);
+      box-shadow: var(--sh-md);
+      background: var(--card);
+    }
     .mock-table {
       width: 100%;
+      min-width: 950px;
       border-collapse: separate;
       border-spacing: 0;
-      margin: 1rem 0;
-      background: var(--card);
-      border: 3px solid var(--ink);
-      border-radius: var(--r-md);
-      box-shadow: var(--sh-md);
-      overflow: hidden;
       font-family: 'JetBrains Mono', monospace;
     }
     .mock-table th, .mock-table td {
@@ -445,7 +504,8 @@
       border-right: 2px solid var(--ink);
       padding: 0.5rem 0.6rem;
       text-align: center;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
     }
     .mock-table th:last-child, .mock-table td:last-child { border-right: none; }
     .mock-table tr:last-child td { border-bottom: none; }
@@ -454,11 +514,21 @@
       color: var(--paper);
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
     }
     .mock-table tr:nth-child(even) td {
       background: #f7f7fb;
+    }
+    .sub-detail {
+      font-size: 0.68rem;
+      opacity: 0.7;
+      margin-top: 0.15rem;
+    }
+    .sub-acc {
+      color: var(--purple);
+      font-weight: bold;
+      opacity: 1;
     }
     .btn-small {
       font-size: 0.78rem;
@@ -574,35 +644,53 @@
           </div>
           <div>
             <label>Total Max Marks</label>
-            <input type="number" id="mockTotalMax" value="200" min="1">
+            <input type="number" id="mockTotalMax" value="200" min="0" step="0.01">
           </div>
           <div>
             <label>Total Obtained</label>
-            <input type="number" id="mockTotalObt" value="0" min="0">
+            <input type="number" id="mockTotalObt" value="0" min="0" step="0.01">
+          </div>
+          <div>
+            <label>Percentile</label>
+            <input type="number" id="mockPercentile" placeholder="e.g., 95.5" min="0" max="100" step="0.01">
           </div>
         </div>
+        <p class="form-hint">Correct / Incorrect counts are optional — enter both for a subject to track accuracy, or leave both blank.</p>
         <div class="subject-marks" id="subjectMarksContainer">
           <!-- dynamically filled based on tier -->
         </div>
         <button id="addMockBtn" style="margin-top:1rem;">➕ Add Mock Test</button>
       </div>
 
-      <h2 class="section-heading">📋 Previous Mock Tests</h2>
+      <h2 class="section-heading">📋 Mock Tests & Filters</h2>
+      <div class="analytics-filters" id="globalFilters">
+        <label>Tier: 
+          <select id="filterTier"><option value="1">Tier 1</option><option value="2">Tier 2</option></select>
+        </label>
+        <div class="exam-checkboxes" style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+          <label><input type="checkbox" class="filter-exam" value="CGL" checked> CGL</label>
+          <label><input type="checkbox" class="filter-exam" value="CHSL" checked> CHSL</label>
+          <label><input type="checkbox" class="filter-exam" value="MTS" checked> MTS</label>
+        </div>
+        <label>Time: 
+          <select id="filterTime">
+            <option value="all" selected>All Time</option>
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="365">Last Year</option>
+          </select>
+        </label>
+        <button id="refreshFilterBtn">🔄 Apply Filters</button>
+      </div>
+      
       <div id="mockListContainer"></div>
 
       <h2 class="section-heading">📈 Analytics</h2>
-      <div class="analytics-filters" id="analyticsFilters">
-        <label>Tier: 
-          <select id="analyticTier"><option value="1">Tier 1</option><option value="2">Tier 2</option></select>
-        </label>
-        <label><input type="checkbox" class="exam-check" value="CGL" checked> CGL</label>
-        <label><input type="checkbox" class="exam-check" value="CHSL" checked> CHSL</label>
-        <label><input type="checkbox" class="exam-check" value="MTS" checked> MTS</label>
-        <button id="refreshAnalyticsBtn">🔄 Refresh Charts</button>
-      </div>
       <div id="analyticsContainer">
         <canvas id="totalScoreChart" width="400" height="200"></canvas>
         <canvas id="subjectScoreChart" width="400" height="200"></canvas>
+        <canvas id="percentileChart" width="400" height="200"></canvas>
         <div id="statsContainer" class="nb-card"></div>
       </div>
     </div>
@@ -631,37 +719,73 @@
       const STORAGE_MOCKS = 'ssc_mock_tests';
 
       // ---------- GLOBAL DATA ----------
-      let syllabusTree = null;       // root node object
-      let mockTests = [];            // array of mock objects
+      let syllabusTree = null;
+      let mockTests = [];
 
       // UI state for tree
-      let expandedRootSubjectId = null;   // which top-level subject branch is open (focus mode)
-      let showAll = false;                // override to show all root branches
-      let nodeExpandedSet = new Set();    // ids of deeper nodes (depth>1) that are expanded
+      let expandedRootSubjectId = null;
+      let showAll = false;
+      let nodeExpandedSet = new Set();
 
-      // current selected node id for modal
       let currentModalNodeId = null;
-
       let dataMenuOpen = false;
+
+      // Chart instances
+      let totalChartInstance = null;
+      let subjectChartInstance = null;
+      let percentileChartInstance = null;
+
+      // ---------- HELPERS ----------
+      function formatNum(n) {
+        if (n == null || (typeof n === 'number' && isNaN(n))) return '—';
+        if (Number.isInteger(n)) return String(n);
+        return parseFloat(n.toFixed(2)).toString();
+      }
+
+      function computeMockStats(mock) {
+        let totalAttempted = 0, totalCorrect = 0, totalIncorrect = 0;
+        if (mock.subjectAnswers) {
+          for (const sub in mock.subjectAnswers) {
+            const a = mock.subjectAnswers[sub] || {};
+            totalCorrect += Number(a.correct) || 0;
+            totalIncorrect += Number(a.incorrect) || 0;
+          }
+          totalAttempted = totalCorrect + totalIncorrect;
+        }
+        const accuracy = totalAttempted > 0 ? (totalCorrect / totalAttempted * 100) : null;
+        return { totalAttempted, totalCorrect, totalIncorrect, accuracy };
+      }
+
+      function getFilteredMocks() {
+        const tier = parseInt(document.getElementById('filterTier').value);
+        const checkedExams = Array.from(document.querySelectorAll('.filter-exam:checked')).map(cb => cb.value);
+        const timeFilter = document.getElementById('filterTime').value;
+        
+        let filtered = mockTests.filter(m => m.tier === tier && checkedExams.includes(m.examLevel));
+        
+        if (timeFilter !== 'all') {
+          const days = parseInt(timeFilter);
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - days);
+          cutoff.setHours(0,0,0,0);
+          filtered = filtered.filter(m => {
+            if (!m.date) return false;
+            const mockDate = new Date(m.date + 'T00:00:00');
+            return mockDate >= cutoff;
+          });
+        }
+        
+        return filtered;
+      }
 
       // ---------- DEFAULT SYLLABUS TREE ----------
       function createDefaultTree() {
         const root = {
-          id: 'root',
-          name: 'SSC Syllabus',
-          confidence: 2,
-          notes: '',
-          tier2only: false,
-          children: []
+          id: 'root', name: 'SSC Syllabus', confidence: 2, notes: '', tier2only: false, children: []
         };
 
-        // English
         const eng = {
-          id: 'eng',
-          name: 'English Language',
-          confidence: 2,
-          notes: '',
-          tier2only: false,
+          id: 'eng', name: 'English Language', confidence: 2, notes: '', tier2only: false,
           children: [
             { id: 'eng1', name: 'Spot the Error', confidence:2, notes:'', tier2only:false, children:[] },
             { id: 'eng2', name: 'Fill in the Blanks', confidence:2, notes:'', tier2only:false, children:[] },
@@ -680,13 +804,8 @@
           ]
         };
 
-        // Reasoning
         const reasoning = {
-          id: 'reasoning',
-          name: 'General Intelligence',
-          confidence: 2,
-          notes: '',
-          tier2only: false,
+          id: 'reasoning', name: 'General Intelligence', confidence: 2, notes: '', tier2only: false,
           children: [
             { id: 'res1', name: 'Semantic Analogy', confidence:2, notes:'', tier2only:false, children:[] },
             { id: 'res2', name: 'Symbolic operations', confidence:2, notes:'', tier2only:false, children:[] },
@@ -715,13 +834,8 @@
           ]
         };
 
-        // Quant
         const quant = {
-          id: 'quant',
-          name: 'Quantitative Aptitude',
-          confidence: 2,
-          notes: '',
-          tier2only: false,
+          id: 'quant', name: 'Quantitative Aptitude', confidence: 2, notes: '', tier2only: false,
           children: [
             { id: 'q1', name: 'Number Systems', confidence:2, notes:'', tier2only:false, children: [
               { id: 'q1a', name: 'Whole Numbers, Decimals, Fractions', confidence:2, notes:'', tier2only:false, children:[] },
@@ -747,13 +861,8 @@
           ]
         };
 
-        // General Awareness
         const ga = {
-          id: 'ga',
-          name: 'General Awareness',
-          confidence: 2,
-          notes: '',
-          tier2only: false,
+          id: 'ga', name: 'General Awareness', confidence: 2, notes: '', tier2only: false,
           children: [
             { id: 'ga1', name: 'History', confidence:2, notes:'', tier2only:false, children:[] },
             { id: 'ga2', name: 'Geography', confidence:2, notes:'', tier2only:false, children:[] },
@@ -764,13 +873,8 @@
           ]
         };
 
-        // Computer Knowledge (Tier 2 only)
         const comp = {
-          id: 'comp',
-          name: 'Computer Knowledge',
-          confidence: 2,
-          notes: '',
-          tier2only: true,
+          id: 'comp', name: 'Computer Knowledge', confidence: 2, notes: '', tier2only: true,
           children: [
             { id: 'c1', name: 'Computer Basics', confidence:2, notes:'CPU, I/O, memory, ports', tier2only:true, children:[] },
             { id: 'c2', name: 'Software & OS', confidence:2, notes:'Windows, MS Office', tier2only:true, children:[] },
@@ -783,7 +887,7 @@
         return root;
       }
 
-      // ---------- HELPER: FIND NODE BY ID ----------
+      // ---------- FIND HELPERS ----------
       function findNodeById(node, id) {
         if (node.id === id) return node;
         for (let child of node.children || []) {
@@ -829,9 +933,8 @@
         container.innerHTML = '';
         if (!syllabusTree || !syllabusTree.children) return;
 
-        // render root children (subjects)
         syllabusTree.children.forEach(subjectNode => {
-          const subjectEl = createNodeElement(subjectNode, 1); // depth 1 = subject level
+          const subjectEl = createNodeElement(subjectNode, 1);
           container.appendChild(subjectEl);
         });
       }
@@ -844,7 +947,6 @@
         const header = document.createElement('div');
         header.className = 'node-header';
 
-        // expand/collapse button (only if node has children)
         if (node.children && node.children.length > 0) {
           const expandBtn = document.createElement('button');
           expandBtn.className = 'expand-btn';
@@ -853,9 +955,7 @@
           expandBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (depth === 1) {
-              // top-level focus behavior
               if (showAll) {
-                // if showing all, switch to focus mode on clicked
                 showAll = false;
                 expandedRootSubjectId = node.id;
               } else if (expandedRootSubjectId === node.id) {
@@ -864,7 +964,6 @@
                 expandedRootSubjectId = node.id;
               }
             } else {
-              // deeper nodes toggle locally
               if (nodeExpandedSet.has(node.id)) {
                 nodeExpandedSet.delete(node.id);
               } else {
@@ -925,7 +1024,6 @@
 
         card.appendChild(header);
 
-        // children container
         if (node.children && node.children.length > 0) {
           const childrenDiv = document.createElement('div');
           childrenDiv.className = 'node-children';
@@ -964,7 +1062,7 @@
             node.confidence = idx;
             saveAllData();
             renderTree();
-            openNodeModal(nodeId); // refresh modal palette
+            openNodeModal(nodeId);
           });
           palette.appendChild(dot);
         });
@@ -974,7 +1072,6 @@
 
       function closeModal() {
         document.getElementById('nodeModal').style.display = 'none';
-        // save notes on close
         if (currentModalNodeId) {
           const node = findNodeById(syllabusTree, currentModalNodeId);
           if (node) {
@@ -1031,12 +1128,12 @@
         parentNode.children.push(newChild);
         saveAllData();
         renderTree();
-        openNodeModal(currentModalNodeId); // refresh modal
+        openNodeModal(currentModalNodeId);
       });
 
       // ---------- MOCK TEST LOGIC ----------
       function getSubjectFieldsForTier(tier) {
-        if (tier == 2) {
+        if (Number(tier) === 2) {
           return ['English', 'Quant', 'Reasoning', 'GA', 'Computer'];
         } else {
           return ['English', 'Quant', 'Reasoning', 'GA'];
@@ -1049,32 +1146,108 @@
         const container = document.getElementById('subjectMarksContainer');
         container.innerHTML = '';
         subjects.forEach(sub => {
-          const div = document.createElement('div');
-          div.innerHTML = `<label>${sub}</label><input type="number" class="subject-mark" data-subject="${sub}" value="0" min="0">`;
-          container.appendChild(div);
+          const group = document.createElement('div');
+          group.className = 'subject-input-group';
+          group.innerHTML = `
+            <label>${sub} — Marks</label>
+            <input type="number" class="subject-mark" data-subject="${sub}" value="0" min="0" step="0.01">
+            <div class="answer-inputs">
+              <div>
+                <label>Correct</label>
+                <input type="number" class="subject-correct" data-subject="${sub}" placeholder="—" min="0" step="1">
+              </div>
+              <div>
+                <label>Incorrect</label>
+                <input type="number" class="subject-incorrect" data-subject="${sub}" placeholder="—" min="0" step="1">
+              </div>
+            </div>
+            <div class="subject-accuracy" data-subject="${sub}">Accuracy: —</div>
+          `;
+          container.appendChild(group);
         });
       }
 
       document.getElementById('mockTier').addEventListener('change', renderSubjectInputs);
+
+      // Live accuracy calculation inside the form
+      document.getElementById('subjectMarksContainer').addEventListener('input', (e) => {
+        if (e.target.classList.contains('subject-correct') || e.target.classList.contains('subject-incorrect')) {
+          const sub = e.target.dataset.subject;
+          const group = e.target.closest('.subject-input-group');
+          const cInput = group.querySelector('.subject-correct');
+          const iInput = group.querySelector('.subject-incorrect');
+          const accDiv = group.querySelector('.subject-accuracy');
+          const c = parseInt(cInput.value, 10);
+          const i = parseInt(iInput.value, 10);
+          if (!isNaN(c) && !isNaN(i) && (c + i) > 0) {
+            const acc = ((c / (c + i)) * 100).toFixed(1);
+            accDiv.textContent = `Accuracy: ${acc}%`;
+          } else if (!isNaN(c) || !isNaN(i)) {
+            accDiv.textContent = 'Accuracy: — (need both)';
+          } else {
+            accDiv.textContent = 'Accuracy: —';
+          }
+        }
+      });
 
       function addMockTest() {
         const tier = parseInt(document.getElementById('mockTier').value);
         const examLevel = document.getElementById('mockExam').value;
         const source = document.getElementById('mockSource').value.trim();
         const date = document.getElementById('mockDate').value;
-        const totalMax = parseInt(document.getElementById('mockTotalMax').value) || 0;
-        const totalObt = parseInt(document.getElementById('mockTotalObt').value) || 0;
+        const totalMax = parseFloat(document.getElementById('mockTotalMax').value) || 0;
+        const totalObt = parseFloat(document.getElementById('mockTotalObt').value) || 0;
+
+        const percentileRaw = document.getElementById('mockPercentile').value.trim();
+        let percentile = null;
+        if (percentileRaw !== '') {
+          percentile = parseFloat(percentileRaw);
+          if (isNaN(percentile) || percentile < 0 || percentile > 100) {
+            alert('Percentile must be a number between 0 and 100.');
+            return;
+          }
+        }
 
         if (!source || !date) {
           alert('Please fill source and date.');
           return;
         }
 
-        const subjectInputs = document.querySelectorAll('.subject-mark');
+        const subjectMarkInputs = document.querySelectorAll('.subject-mark');
         const subjectMarks = {};
-        subjectInputs.forEach(inp => {
-          subjectMarks[inp.dataset.subject] = parseInt(inp.value) || 0;
+        subjectMarkInputs.forEach(inp => {
+          subjectMarks[inp.dataset.subject] = parseFloat(inp.value) || 0;
         });
+
+        const subjects = getSubjectFieldsForTier(tier);
+        const subjectAnswers = {};
+        let anyAnswers = false;
+        let answerError = false;
+
+        subjects.forEach(sub => {
+          const cInp = document.querySelector(`.subject-correct[data-subject="${sub}"]`);
+          const iInp = document.querySelector(`.subject-incorrect[data-subject="${sub}"]`);
+          if (!cInp || !iInp) return;
+          const cRaw = cInp.value.trim();
+          const iRaw = iInp.value.trim();
+          if (cRaw === '' && iRaw === '') return;
+          if (cRaw === '' || iRaw === '') {
+            alert(`For ${sub}, please enter both Correct and Incorrect counts (or leave both blank).`);
+            answerError = true;
+            return;
+          }
+          const c = parseInt(cRaw, 10);
+          const i = parseInt(iRaw, 10);
+          if (isNaN(c) || isNaN(i) || c < 0 || i < 0) {
+            alert(`Invalid Correct / Incorrect count for ${sub}.`);
+            answerError = true;
+            return;
+          }
+          subjectAnswers[sub] = { correct: c, incorrect: i };
+          anyAnswers = true;
+        });
+
+        if (answerError) return;
 
         const newMock = {
           id: Date.now(),
@@ -1084,11 +1257,14 @@
           date,
           totalMax,
           totalObt,
+          percentile,
           subjectMarks
         };
+        if (anyAnswers) newMock.subjectAnswers = subjectAnswers;
+
         mockTests.push(newMock);
         saveAllData();
-        renderMockList();
+        applyFilters(); // Updates table and graphs
         clearMockForm();
       }
 
@@ -1097,72 +1273,137 @@
         document.getElementById('mockDate').value = '';
         document.getElementById('mockTotalMax').value = '200';
         document.getElementById('mockTotalObt').value = '0';
+        document.getElementById('mockPercentile').value = '';
         renderSubjectInputs();
       }
 
-      function deleteMock(id) {
-        mockTests = mockTests.filter(m => m.id !== id);
-        saveAllData();
+      document.getElementById('addMockBtn').addEventListener('click', addMockTest);
+
+      // ---------- FILTERS & TABLE ----------
+      function applyFilters() {
         renderMockList();
+        refreshAnalytics();
       }
+
+      document.getElementById('refreshFilterBtn').addEventListener('click', applyFilters);
+      document.getElementById('filterTier').addEventListener('change', applyFilters);
+      document.getElementById('filterTime').addEventListener('change', applyFilters);
+      document.querySelectorAll('.filter-exam').forEach(cb => cb.addEventListener('change', applyFilters));
+
+      // Event delegation for table delete button
+      document.getElementById('mockListContainer').addEventListener('click', (e) => {
+        const btn = e.target.closest('.delete-mock-btn');
+        if (btn) {
+          const id = parseInt(btn.dataset.id, 10);
+          if (confirm('Delete this mock test?')) {
+            mockTests = mockTests.filter(m => m.id !== id);
+            saveAllData();
+            applyFilters();
+          }
+        }
+      });
 
       function renderMockList() {
         const container = document.getElementById('mockListContainer');
-        if (mockTests.length === 0) {
-          container.innerHTML = '<p>No mock tests recorded yet.</p>';
+        const filtered = getFilteredMocks();
+        
+        if (filtered.length === 0) {
+          container.innerHTML = '<p style="margin:1rem 0; font-weight:bold;">No mock tests match the selected filters.</p>';
           return;
         }
-        const sorted = [...mockTests].sort((a,b) => new Date(b.date) - new Date(a.date));
-        let html = `<table class="mock-table"><thead><tr><th>Date</th><th>Tier</th><th>Exam</th><th>Source</th><th>Total</th>`;
-        const sampleSubs = sorted[0].subjectMarks ? Object.keys(sorted[0].subjectMarks) : [];
-        sampleSubs.forEach(s => html += `<th>${s}</th>`);
-        html += `<th>Action</th></tr></thead><tbody>`;
+
+        const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        const allSubjectsSet = new Set();
         sorted.forEach(m => {
+          if (m.subjectMarks) Object.keys(m.subjectMarks).forEach(s => allSubjectsSet.add(s));
+          if (m.subjectAnswers) Object.keys(m.subjectAnswers).forEach(s => allSubjectsSet.add(s));
+        });
+        const subjectList = Array.from(allSubjectsSet);
+
+        let html = `<div class="table-scroll"><table class="mock-table"><thead><tr>
+          <th>Date</th><th>Tier</th><th>Exam</th><th>Source</th><th>Total</th><th>Percentile</th>`;
+        subjectList.forEach(s => { html += `<th>${s}</th>`; });
+        html += `<th>Attempted</th><th>Correct</th><th>Incorrect</th><th>Accuracy</th><th>Action</th>
+          </tr></thead><tbody>`;
+
+        sorted.forEach(m => {
+          const stats = computeMockStats(m);
+          const hasAnswers = !!(m.subjectAnswers && Object.keys(m.subjectAnswers).length > 0);
+
           html += `<tr>
             <td>${m.date}</td>
             <td>${m.tier}</td>
             <td>${m.examLevel}</td>
             <td>${m.source}</td>
-            <td>${m.totalObt}/${m.totalMax}</td>`;
-          sampleSubs.forEach(s => {
-            html += `<td>${m.subjectMarks?.[s] ?? '-'}</td>`;
+            <td>${formatNum(m.totalObt)}/${formatNum(m.totalMax)}</td>
+            <td>${m.percentile != null ? formatNum(m.percentile) : '—'}</td>`;
+
+          subjectList.forEach(s => {
+            const marks = m.subjectMarks?.[s];
+            const ans = m.subjectAnswers?.[s];
+            let cell = formatNum(marks);
+            if (ans) {
+              const subTotal = ans.correct + ans.incorrect;
+              const subAcc = subTotal > 0 ? ((ans.correct / subTotal) * 100).toFixed(0) : 0;
+              cell += `<div class="sub-detail">${ans.correct}✓ ${ans.incorrect}✗</div>`;
+              cell += `<div class="sub-detail sub-acc">${subAcc}%</div>`;
+            }
+            html += `<td>${cell}</td>`;
           });
-          html += `<td><button class="btn-small" onclick="deleteMock(${m.id})">❌</button></td></tr>`;
+
+          html += `
+            <td>${hasAnswers ? stats.totalAttempted : '—'}</td>
+            <td>${hasAnswers ? stats.totalCorrect : '—'}</td>
+            <td>${hasAnswers ? stats.totalIncorrect : '—'}</td>
+            <td>${stats.accuracy != null ? stats.accuracy.toFixed(1) + '%' : '—'}</td>
+            <td><button class="btn-small delete-mock-btn" data-id="${m.id}">❌</button></td>
+          </tr>`;
         });
-        html += `</tbody></table>`;
+
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
       }
-      window.deleteMock = deleteMock; // expose for inline onclick
-
-      document.getElementById('addMockBtn').addEventListener('click', addMockTest);
 
       // ---------- ANALYTICS ----------
-      let totalChartInstance = null;
-      let subjectChartInstance = null;
-
       function refreshAnalytics() {
-        const tier = parseInt(document.getElementById('analyticTier').value);
-        const checkedExams = Array.from(document.querySelectorAll('.exam-check:checked')).map(cb => cb.value);
-        const filtered = mockTests.filter(m => m.tier === tier && checkedExams.includes(m.examLevel));
+        const filtered = getFilteredMocks();
         const sorted = [...filtered].sort((a,b) => new Date(a.date) - new Date(b.date));
 
-        // stats
         const statsDiv = document.getElementById('statsContainer');
         if (sorted.length === 0) {
           statsDiv.innerHTML = '<p>No data for selected filters.</p>';
         } else {
           const topTotal = Math.max(...sorted.map(m => m.totalObt));
-          const avgTotal = (sorted.reduce((s,m) => s + m.totalObt, 0) / sorted.length).toFixed(1);
-          let subStats = '';
-          const allSubs = sorted[0].subjectMarks ? Object.keys(sorted[0].subjectMarks) : [];
-          allSubs.forEach(sub => {
-            const topSub = Math.max(...sorted.map(m => m.subjectMarks?.[sub] || 0));
-            subStats += `<strong>${sub}:</strong> Top ${topSub} | `;
+          const avgTotal = (sorted.reduce((s,m) => s + (m.totalObt || 0), 0) / sorted.length).toFixed(1);
+
+          let cumAttempted = 0, cumCorrect = 0, cumIncorrect = 0;
+          sorted.forEach(m => {
+            const s = computeMockStats(m);
+            cumAttempted += s.totalAttempted;
+            cumCorrect += s.totalCorrect;
+            cumIncorrect += s.totalIncorrect;
           });
-          statsDiv.innerHTML = `<p>🏆 <strong>Top Total Score:</strong> ${topTotal} | 📊 <strong>Average:</strong> ${avgTotal}</p><p>${subStats}</p>`;
+          const cumAccuracy = cumAttempted > 0 ? (cumCorrect / cumAttempted * 100).toFixed(1) : null;
+
+          const allSubsSet = new Set();
+          sorted.forEach(m => {
+            if (m.subjectMarks) Object.keys(m.subjectMarks).forEach(s => allSubsSet.add(s));
+          });
+          let subStats = '';
+          Array.from(allSubsSet).forEach(sub => {
+            const topSub = Math.max(...sorted.map(m => m.subjectMarks?.[sub] ?? 0));
+            subStats += `<strong>${sub}:</strong> Top ${formatNum(topSub)} &nbsp;|&nbsp; `;
+          });
+
+          statsDiv.innerHTML = `
+            <p>🏆 <strong>Top Total Score:</strong> ${formatNum(topTotal)} &nbsp;|&nbsp; 📊 <strong>Average:</strong> ${avgTotal}</p>
+            <p>${subStats}</p>
+            <p>✅ <strong>Cumulative:</strong> Attempted ${cumAttempted} &nbsp;|&nbsp; Correct ${cumCorrect} &nbsp;|&nbsp; Incorrect ${cumIncorrect} &nbsp;|&nbsp; Accuracy ${cumAccuracy != null ? cumAccuracy + '%' : '—'}</p>
+          `;
         }
 
-        // total score chart
+        // Total score chart
         const ctxTotal = document.getElementById('totalScoreChart').getContext('2d');
         if (totalChartInstance) totalChartInstance.destroy();
         totalChartInstance = new Chart(ctxTotal, {
@@ -1181,9 +1422,7 @@
           },
           options: {
             responsive: true,
-            plugins: {
-              legend: { labels: { font: { family: 'JetBrains Mono', size: 14 } } }
-            },
+            plugins: { legend: { labels: { font: { family: 'JetBrains Mono', size: 14 } } } },
             scales: {
               x: { ticks: { font: { family: 'JetBrains Mono' } } },
               y: { beginAtZero: true, ticks: { font: { family: 'JetBrains Mono' } } }
@@ -1191,22 +1430,25 @@
           }
         });
 
-        // subject-wise chart
+        // Subject-wise chart
         const ctxSub = document.getElementById('subjectScoreChart').getContext('2d');
         if (subjectChartInstance) subjectChartInstance.destroy();
-        if (sorted.length > 0 && sorted[0].subjectMarks) {
-          const subjects = Object.keys(sorted[0].subjectMarks);
-          const datasets = subjects.map((sub, i) => {
-            const colors = ['#e03131','#1c7ed6','#f08c00','#2f9e44','#6965db'];
-            return {
-              label: sub,
-              data: sorted.map(m => m.subjectMarks?.[sub] || 0),
-              borderColor: colors[i % colors.length],
-              backgroundColor: 'transparent',
-              borderWidth: 3,
-              tension: 0.2
-            };
+        if (sorted.length > 0) {
+          const subjects = new Set();
+          sorted.forEach(m => {
+            if (m.subjectMarks) Object.keys(m.subjectMarks).forEach(s => subjects.add(s));
           });
+          const subjectList = Array.from(subjects);
+          const colors = ['#e03131','#1c7ed6','#f08c00','#2f9e44','#6965db'];
+          const datasets = subjectList.map((sub, i) => ({
+            label: sub,
+            data: sorted.map(m => m.subjectMarks?.[sub] ?? null),
+            borderColor: colors[i % colors.length],
+            backgroundColor: 'transparent',
+            borderWidth: 3,
+            tension: 0.2,
+            spanGaps: true
+          }));
           subjectChartInstance = new Chart(ctxSub, {
             type: 'line',
             data: { labels: sorted.map(m => m.date), datasets },
@@ -1220,9 +1462,64 @@
             }
           });
         }
-      }
 
-      document.getElementById('refreshAnalyticsBtn').addEventListener('click', refreshAnalytics);
+        // Percentile & Accuracy Chart
+        const ctxPct = document.getElementById('percentileChart').getContext('2d');
+        if (percentileChartInstance) percentileChartInstance.destroy();
+        const pctData = sorted.map(m => (m.percentile != null ? m.percentile : null));
+        const accData = sorted.map(m => {
+          const stats = computeMockStats(m);
+          return stats.accuracy;
+        });
+
+        if (pctData.some(v => v != null) || accData.some(v => v != null)) {
+          percentileChartInstance = new Chart(ctxPct, {
+            type: 'line',
+            data: {
+              labels: sorted.map(m => m.date),
+              datasets: [
+                {
+                  label: 'Percentile',
+                  data: pctData,
+                  borderColor: '#f08c00',
+                  backgroundColor: 'rgba(240,140,0,0.15)',
+                  borderWidth: 3,
+                  pointBackgroundColor: '#000',
+                  tension: 0.2,
+                  spanGaps: true,
+                  yAxisID: 'y'
+                },
+                {
+                  label: 'Accuracy (%)',
+                  data: accData,
+                  borderColor: '#2f9e44',
+                  backgroundColor: 'transparent',
+                  borderWidth: 3,
+                  borderDash: [6, 4],
+                  pointBackgroundColor: '#2f9e44',
+                  tension: 0.2,
+                  spanGaps: true,
+                  yAxisID: 'y'
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { labels: { font: { family: 'JetBrains Mono', size: 14 } } } },
+              scales: {
+                x: { ticks: { font: { family: 'JetBrains Mono' } } },
+                y: { 
+                  beginAtZero: true, 
+                  max: 100, 
+                  ticks: { font: { family: 'JetBrains Mono' } } 
+                }
+              }
+            }
+          });
+        } else {
+          ctxPct.clearRect(0, 0, ctxPct.canvas.width, ctxPct.canvas.height);
+        }
+      }
 
       // ---------- TAB SWITCHING ----------
       const tabBtns = document.querySelectorAll('.tab-btn');
@@ -1240,7 +1537,7 @@
           } else {
             syllabusPage.style.display = 'none';
             mockPage.classList.remove('hidden-page');
-            renderMockList();
+            applyFilters();
           }
         });
       });
@@ -1248,9 +1545,7 @@
       // ---------- SHOW ALL BUTTON ----------
       document.getElementById('showAllBtn').addEventListener('click', () => {
         showAll = !showAll;
-        if (showAll) {
-          expandedRootSubjectId = null;
-        }
+        if (showAll) expandedRootSubjectId = null;
         document.getElementById('showAllBtn').textContent = showAll ? '🔽 Collapse All' : '👁️ Show All Subjects';
         renderTree();
       });
@@ -1286,9 +1581,7 @@
             closeModal();
             return;
           }
-          if (dataMenuOpen) {
-            closeDataMenu();
-          }
+          if (dataMenuOpen) closeDataMenu();
         }
       });
 
@@ -1322,7 +1615,7 @@
               mockTests = data.mockTests;
               saveAllData();
               renderTree();
-              renderMockList();
+              applyFilters();
               alert('Data imported successfully!');
             } else {
               alert('Invalid file format.');
@@ -1340,10 +1633,8 @@
       renderTree();
       renderSubjectInputs();
       document.getElementById('mockDate').value = new Date().toISOString().slice(0,10);
-      // Default tab is syllabus
       syllabusPage.style.display = 'block';
       mockPage.classList.add('hidden-page');
-
       closeDataMenu();
     })();
   </script>
